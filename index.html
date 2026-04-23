@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3 DNK | DNK RUIN PROFILE DEV PLUS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;700&family=Orbitron:wght@400;900&display=swap');
+
+        :root {
+            --blood: #ff0000;
+            --cyan: #00f6ff;
+            --bg: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Fira Code', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- ACCESS SCREEN --- */
+        #boot-screen {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .scan-line {
+            position: absolute; width: 100%; height: 2px; background: var(--cyan);
+            opacity: 0.3; top: 0; left: 0; box-shadow: 0 0 15px var(--cyan);
+            animation: scanning 3s linear infinite;
+        }
+
+        @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
+
+        .click-box {
+            padding: 15px 40px; border: 1px solid var(--blood);
+            font-family: 'Orbitron'; font-size: 14px; color: #fff;
+            letter-spacing: 5px; position: relative; overflow: hidden;
+            background: rgba(255, 0, 0, 0.05); transition: 0.3s;
+            text-shadow: 0 0 10px var(--blood);
+        }
+
+        .click-box:hover { border-color: var(--cyan); color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* --- MAIN CARD --- */
+        #mainCard {
+            position: relative; width: 98vw; 
+            height: 52vh; /* Tăng thêm để chứa info dev */
+            max-width: 1150px;
+            background: rgba(0, 0, 0, 0.98); border: 1px solid #1a1a1a;
+            display: none; border-top: 2px solid var(--blood);
+            box-shadow: 0 0 100px rgba(255, 0, 0, 0.15);
+        }
+
+        .ui-header {
+            background: var(--blood); color: #000; padding: 4px 15px;
+            font-family: 'Orbitron'; font-size: 10px; font-weight: 900;
+            display: flex; justify-content: space-between; letter-spacing: 2px;
+        }
+
+        .layout {
+            display: grid; grid-template-columns: 220px 1fr 340px;
+            height: calc(100% - 65px); 
+            gap: 15px; padding: 12px;
+        }
+
+        .module {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 6px 10px; text-decoration: none; color: inherit; 
+            display: block; transition: 0.2s; margin-bottom: 5px;
+            border-left: 2px solid var(--blood);
+        }
+        .module:hover { background: rgba(0, 246, 255, 0.1); border-left-color: var(--cyan); transform: scale(1.02); }
+
+        .lbl { color: var(--cyan); font-size: 8px; text-transform: uppercase; display: block; opacity: 0.8; }
+        .val { font-size: 10px; font-weight: bold; margin-top: 2px; }
+
+        /* --- CENTER COLUMN UPDATED --- */
+        .center {
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding-top: 5px;
+        }
+
+        .ascii-art {
+            font-size: 6px; color: var(--blood); text-align: center;
+            white-space: pre; line-height: 1; margin: 10px 0;
+            filter: drop-shadow(0 0 10px var(--blood));
+        }
+
+        /* Phần giới thiệu Dev */
+        .dev-info {
+            width: 100%; max-width: 450px;
+            margin-top: 10px; padding: 10px;
+            border: 1px dashed rgba(0, 246, 255, 0.2);
+            background: rgba(0, 246, 255, 0.02);
+        }
+
+        .dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        
+        .skill-item { font-size: 9px; margin-bottom: 4px; }
+        .skill-bar { height: 3px; background: #222; width: 100%; position: relative; overflow: hidden; }
+        .skill-progress { height: 100%; background: var(--cyan); box-shadow: 0 0 5px var(--cyan); }
+
+        .dev-meta { font-size: 9px; color: #888; border-top: 1px solid #111; pt: 5px; margin-top: 5px; }
+        .dev-meta b { color: var(--blood); }
+
+        .terminal {
+            font-size: 10px; background: #050505; padding: 10px;
+            height: 100%; overflow-y: auto; border: 1px solid #111;
+        }
+
+        .terminal::-webkit-scrollbar { width: 3px; }
+        .terminal::-webkit-scrollbar-thumb { background: var(--blood); }
+
+        .lyric-line {
+            background: linear-gradient(90deg, var(--cyan), #fff, var(--blood));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 900; margin-bottom: 8px; border-left: 2px solid var(--cyan);
+            padding-left: 8px; animation: slide 0.3s forwards;
+        }
+
+        @keyframes slide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .contact-hub {
+            display: block; width: 100%; padding: 10px; border: 1px solid var(--cyan);
+            color: var(--cyan); text-align: center; text-decoration: none;
+            font-family: 'Orbitron'; font-size: 10px; margin-top: 10px;
+            background: rgba(0, 246, 255, 0.05); letter-spacing: 3px;
+            transition: 0.4s; font-weight: bold;
+        }
+        .contact-hub:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan); }
+
+        /* BOTTOM DASH */
+        .bottom-dash {
+            height: 40px; border-top: 1px solid #222;
+            display: flex; align-items: center; padding: 0 15px;
+            background: rgba(255,0,0,0.02); gap: 20px;
+        }
+
+        .dash-item { font-size: 8px; color: #555; font-family: 'Orbitron'; }
+        .dash-item span { color: var(--cyan); font-weight: bold; }
+
+        .mini-vis { flex-grow: 1; height: 20px; display: flex; align-items: flex-end; gap: 2px; }
+        .mv-bar { flex: 1; height: 2px; background: var(--blood); opacity: 0.5; }
+
+        .live-logs { width: 180px; font-size: 7px; color: #333; overflow: hidden; height: 25px; }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .side-right, .ascii-art, .bottom-dash, .dev-info { display: none; }
+        }
+    </style>
+</head>
+<body onclick="launch()">
+
+    <div id="boot-screen">
+        <div class="scan-line"></div>
+        <div style="color:var(--cyan); font-family: 'Orbitron'; font-size: 10px; margin-bottom: 20px; letter-spacing: 8px; opacity: 0.6;">AUTHENTICATING...</div>
+        <div class="click-box">ACCESS SYSTEM</div>
+    </div>
+
+    <div id="mainCard">
+        <div class="ui-header">
+            <span>TERMINAL // V2_DNK_HUB // v3.0_PRO_PLUS</span>
+            <span id="time">00:00:00</span>
+        </div>
+
+        <div class="layout">
+            <div class="side-left">
+                <a href="https://zalo.me/0799655026" target="_blank" class="module">
+                    <span class="lbl">Zalo Server</span>
+                    <div class="val">0799655026</div>
+                </a>
+                <a href="https://www.facebook.com/share/1EudXPhPkM/" target="_blank" class="module">
+                    <span class="lbl">Meta Identity</span>
+                    <div class="val">Tuấn Kiệt</div>
+                </a>
+                <a href="https://tiktok.com/@dnk_ruin" target="_blank" class="module">
+                    <span class="lbl">TikTok Feed</span>
+                    <div class="val">@dnk_ruin</div>
+                </a>
+                <a href="https://discord.com/users/1307497413589864512" target="_blank" class="module">
+                    <span class="lbl">Discord ID</span>
+                    <div class="val">tuankiet_100</div>
+                </a>
+                <div class="live-logs" id="log-box"></div>
+            </div>
+
+            <div class="center">
+                <div class="ascii-art">
+██████╗ ███╗   ██╗██╗  ██╗    ██████╗ ██╗   ██╗██╗███╗   ██╗
+██╔══██╗████╗  ██║██║ ██╔╝    ██╔══██╗██║   ██║██║████╗  ██║
+██║  ██║██╔██╗ ██║█████╔╝     ██████╔╝██║   ██║██║██╔██╗ ██║
+██║  ██║██║╚██╗██║██╔═██╗     ██╔══██╗██║   ██║██║██║╚██╗██║
+██████╔╝██║ ╚████║██║  ██╗    ██║  ██║╚██████╔╝██║██║ ╚████║
+╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝</div>
+
+                <div class="dev-info">
+                    <div style="font-size: 8px; color: var(--cyan); margin-bottom: 8px; border-bottom: 1px solid #222;">> DEVELOPER_PROFILE: </div>
+                    <div class="dev-grid">
+                        <div class="skills">
+                            <div class="skill-item">SIMPLE WEBSITE <span style="float:right">50%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 50%"></div></div>
+                            <div class="skill-item" style="margin-top:5px">LARGE WEBSITE <span style="float:right">5%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 5%"></div></div>
+                        </div>
+                        <div class="skills">
+                            <div class="skill-item">BOT WAR DISCORD <span style="float:right">60%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 60%"></div></div>
+                            <div class="skill-item" style="margin-top:5px">BOT SUPPORT DISCORD <span style="float:right">45%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" style="width: 45%"></div></div>
+                        </div>
+                    </div>
+                    <div class="dev-meta">
+                        STATUS: <b style="color: var(--cyan)">CODING_NIGHT_SHIFT</b><br>
+                        EXPERIENCE: <b>1 MONTH</b> | MAIN RESPONSIBILITIES: <b>WEB CODING, SIMPLE BOT PROGRAMMING</b>
+                    </div>
+                </div>
+
+                <a href="https://discord.com/users/1307497413589864512" target="_blank" class="contact-hub">CONTACT HUB ACCESS</a>
+            </div>
+
+            <div class="side-right">
+                <div class="terminal" id="term"></div>
+            </div>
+        </div>
+
+        <div class="bottom-dash">
+            <div class="dash-item">CPU: <span id="cpu-val">0%</span></div>
+            <div class="dash-item">RAM: <span id="ram-val">0%</span></div>
+            <div class="mini-vis" id="m-vis"></div>
+            <div class="dash-item">PING: <span id="ping-val">24ms</span></div>
+            <div class="dash-item" style="color: var(--blood)">SECURE_LINK: ACTIVE</div>
+        </div>
+    </div>
+
+    <audio id="music" loop><source src="noi_nay_co_anh.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        const audio = document.getElementById('music');
+        const lyrics = [
+            "Khi bên anh em thấy điều chi?", "Khi bên anh em thấy điều gì?", "Nước mắt rơi gần kề làn mi...",
+            "Chẳng còn những giây phút", "Chẳng còn những ân tình", "Gió mang em rời xa nơi đây...",
+            "Khi xa anh em nhớ về ai?", "Khi xa anh em nhớ một người", "Chắc không phải một người như anh",
+            "Người từng làm em khóc", "Người từng khiến em buồn", "Buông bàn tay, rời xa lặng thinh bước đi...",
+            "Hạt mưa rơi bủa vây trái tim hiu quạnh", "Ngàn yêu thương vụt tan bỗng xa",
+            "Người từng nói ở bên cạnh anh mỗi khi anh buồn", "Cớ sao giờ lời nói kia như gió bay",
+            "Đừng bỏ rơi bàn tay ấy bơ vơ mà", "Một mình anh lặng im chốn đây", "Yêu em âm thầm bên em..."
+        ];
+
+        let launched = false;
+        function launch() {
+            if(launched) return;
+            launched = true;
+            audio.play().catch(() => {});
+            
+            document.getElementById('boot-screen').style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'none';
+                document.getElementById('mainCard').style.display = 'block';
+                initVisualizer();
+                startLyrics();
+                startDash();
+            }, 800);
+        }
+
+        function initVisualizer() {
+            const v = document.getElementById('m-vis');
+            for(let i=0; i<50; i++) {
+                let b = document.createElement('div');
+                b.className = 'mv-bar';
+                v.appendChild(b);
+            }
+            setInterval(() => {
+                document.querySelectorAll('.mv-bar').forEach(b => {
+                    let h = Math.random() * 18 + 2;
+                    b.style.height = h + "px";
+                    b.style.opacity = h/20;
+                });
+            }, 100);
+        }
+
+        function startLyrics() {
+            let idx = 0;
+            const term = document.getElementById('term');
+            function addLyricLine() {
+                let p = document.createElement('div');
+                p.className = 'lyric-line';
+                p.innerHTML = `>> ${lyrics[idx]}`;
+                term.appendChild(p);
+                idx = (idx + 1) % lyrics.length;
+                term.scrollTo({ top: term.scrollHeight, behavior: 'smooth' });
+            }
+            addLyricLine();
+            setInterval(addLyricLine, 3000);
+        }
+
+        function startDash() {
+            const logBox = document.getElementById('log-box');
+            const logs = ["GET /api/system", "AUTH_SUCCESS", "ENCRYPT_ACTIVE", "LINK_STABLE", "PING_DA_NANG"];
+            
+            setInterval(() => {
+                document.getElementById('cpu-val').innerText = Math.floor(Math.random()*40 + 10) + "%";
+                document.getElementById('ram-val').innerText = Math.floor(Math.random()*20 + 40) + "%";
+                
+                let l = document.createElement('div');
+                l.innerText = `[${new Date().toLocaleTimeString()}] ${logs[Math.floor(Math.random()*logs.length)]}`;
+                logBox.prepend(l);
+                if(logBox.children.length > 3) logBox.removeChild(logBox.lastChild);
+            }, 2000);
+        }
+
+        setInterval(() => { 
+            document.getElementById('time').innerText = new Date().toLocaleTimeString(); 
+        }, 1000);
+    </script>
+</body>
+</html>
+
+
+
